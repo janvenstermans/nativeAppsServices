@@ -2,14 +2,17 @@ package com.tile.janv.serviceandnetwork;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,7 +20,11 @@ import java.util.List;
  */
 public class SubredditFragment extends Fragment {
 
-    private TextView contentLabel;
+    private RecyclerView recyclerView;
+    private RedditListAdapter recyclerViewAdapter;
+    private RecyclerView.LayoutManager recyclerViewLayoutManager;
+    private List<RedditListElement> list;
+
     private RedditService redditService;
 
     /**
@@ -45,7 +52,20 @@ public class SubredditFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_subreddit, container, false);
-        contentLabel = (TextView) rootView.findViewById(R.id.subreddit_label);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.subreddit_recycler_view);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        recyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        recyclerViewLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(recyclerViewLayoutManager);
+
+        // specify an adapter (see also next example)
+        recyclerViewAdapter = new RedditListAdapter(new ArrayList<RedditListElement>());
+        recyclerView.setAdapter(recyclerViewAdapter);
+
         return rootView;
     }
 
@@ -53,6 +73,7 @@ public class SubredditFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         redditService = new RedditService(Volley.newRequestQueue(getActivity()));
+        recyclerViewAdapter.setRedditService(redditService);
         ((MainActivity) getActivity()).onSectionAttached(getArgSectionNumner());
     }
 
@@ -71,12 +92,13 @@ public class SubredditFragment extends Fragment {
         redditService.getSubredditList(subreddit, new RedditService.Callback<List<RedditListElement>>() {
             @Override
             public void onSuccess(List<RedditListElement> result) {
-                contentLabel.setText("success with json, " + result.size() + " posts");
+                Toast.makeText(getContext(), "success with json, " + result.size() + " posts", Toast.LENGTH_SHORT).show();
+                recyclerViewAdapter.addListElements(result);
             }
 
             @Override
             public void onError(VolleyError error) {
-                contentLabel.setText("error with json");
+                Toast.makeText(getContext(), "error with json", Toast.LENGTH_SHORT).show();
             }
         });
     }
