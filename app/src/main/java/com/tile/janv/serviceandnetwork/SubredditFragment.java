@@ -1,6 +1,5 @@
 package com.tile.janv.serviceandnetwork;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,10 +7,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+
+import java.util.List;
+
 /**
  * A placeholder fragment containing a simple view.
  */
 public class SubredditFragment extends Fragment {
+
+    private TextView contentLabel;
+    private RedditService redditService;
+
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -37,15 +45,39 @@ public class SubredditFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_subreddit, container, false);
-        TextView contentLabel = (TextView) rootView.findViewById(R.id.subreddit_label);
-        contentLabel.setText("TODO: add content for subreddit " + Constants.getSubreddit(getArguments().getInt(ARG_SECTION_NUMBER)));
+        contentLabel = (TextView) rootView.findViewById(R.id.subreddit_label);
         return rootView;
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        ((MainActivity) activity).onSectionAttached(
-                getArguments().getInt(ARG_SECTION_NUMBER));
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        redditService = new RedditService(Volley.newRequestQueue(getActivity()));
+        ((MainActivity) getActivity()).onSectionAttached(getArgSectionNumner());
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getJsonFromReddit();
+    }
+
+    private int getArgSectionNumner() {
+        return getArguments().getInt(ARG_SECTION_NUMBER);
+    }
+
+    private void getJsonFromReddit() {
+        String subreddit = Constants.getSubreddit(getArgSectionNumner());
+        redditService.getSubredditList(subreddit, new RedditService.Callback<List<RedditListElement>>() {
+            @Override
+            public void onSuccess(List<RedditListElement> result) {
+                contentLabel.setText("success with json, " + result.size() + " posts");
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+                contentLabel.setText("error with json");
+            }
+        });
     }
 }
