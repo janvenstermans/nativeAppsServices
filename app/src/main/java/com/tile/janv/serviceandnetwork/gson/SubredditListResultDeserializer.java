@@ -32,8 +32,8 @@ public class SubredditListResultDeserializer  implements JsonDeserializer<Subred
         final JsonArray childrenArray = listingData.get("children").getAsJsonArray();
         final List<RedditListElement> listElements = new ArrayList<>();
         for (int i = 0; i < childrenArray.size(); i++) {
-            final JsonElement jsonAuthor = childrenArray.get(i);
-            RedditListElement element = context.deserialize(jsonAuthor, RedditListElement.class);
+            final JsonElement jsonElement = childrenArray.get(i);
+            RedditListElement element = context.deserialize(jsonElement, RedditListElement.class);
             listElements.add(element);
         }
 

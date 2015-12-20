@@ -10,4 +10,8 @@
 
     <string name="navigation_drawer_header">Subreddits</string>
     <string name="list_posts_empty">No Posts Found</string>
+
+    <!-- details activity -->
+    <string name="title_activity_reddit_detail">Reddit Post Detail</string>
+    <string name="image_cannot_be_loaded">Image cannot be loaded</string>
 </resources>

@@ -1,7 +1,7 @@
 package com.tile.janv.serviceandnetwork;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -92,6 +92,18 @@ public class SubredditFragment extends Fragment {
                 getJsonFromReddit();
             }
         });
+
+        recyclerView.addOnItemTouchListener(new RedditListItemClickListener(getContext(), new RedditListItemClickListener.RedditElementOnClickCallback() {
+            @Override
+            public void onClick(String subreddit, String postId) {
+//                Toast.makeText(getContext(), String.format("Item clicked from subreddit %s with id %s",subreddit,postId),
+//                        Toast.LENGTH_SHORT).show();
+                Intent showDetails = new Intent(getContext(), RedditDetailActivity.class);
+                showDetails.putExtra(RedditDetailActivity.SUBREDDIT, subreddit)
+                        .putExtra(RedditDetailActivity.POST_ID, postId);
+                getActivity().startActivity(showDetails);
+            }
+        }));
 
         return rootView;
     }

@@ -23,12 +23,14 @@ public class RedditListElementDeserializer implements JsonDeserializer<RedditLis
         final JsonObject jsonObject = json.getAsJsonObject();
         GsonUtil.checkKind(jsonObject, "t3");
 
-        final JsonObject listingData = jsonObject.get("data").getAsJsonObject();
-        final String idString = GsonUtil.getStringElementValue(listingData, "id");
-        final String titleString = GsonUtil.getStringElementValue(listingData, "title");
-        final String authorString = GsonUtil.getStringElementValue(listingData, "author");
-        final String linkString = GsonUtil.getStringElementValue(listingData, "link");
-        final String thumbnailString = GsonUtil.getStringElementValue(listingData, "thumbnail");
+        final JsonObject elementData = jsonObject.get("data").getAsJsonObject();
+        final String idString = GsonUtil.getStringElementValue(elementData, "id");
+        final String titleString = GsonUtil.getStringElementValue(elementData, "title");
+        final String authorString = GsonUtil.getStringElementValue(elementData, "author");
+        final String linkString = GsonUtil.getStringElementValue(elementData, "link");
+        final String thumbnailString = GsonUtil.getStringElementValue(elementData, "thumbnail");
+        final String subredditString = GsonUtil.getStringElementValue(elementData, "subreddit");
+        final String permalinkString = GsonUtil.getStringElementValue(elementData, "permalink");
 
         final RedditListElement result = new RedditListElement();
         result.id = idString;
@@ -36,6 +38,8 @@ public class RedditListElementDeserializer implements JsonDeserializer<RedditLis
         result.author = authorString;
         result.link = linkString;
         result.thumbnail = thumbnailString;
+        result.subreddit = subredditString;
+        result.permalink = permalinkString;
         return result;
     }
 }
