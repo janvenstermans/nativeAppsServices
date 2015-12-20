@@ -13,6 +13,8 @@ public class RedditListElement {
     public String author;
     public String link;
     public String thumbnail;
+    public String subreddit;
+    public String permalink;
 
     public RedditListElement() {
     }

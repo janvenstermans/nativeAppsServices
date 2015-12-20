@@ -1,5 +1,6 @@
 package com.tile.janv.serviceandnetwork;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 
@@ -48,7 +50,9 @@ public class RedditListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         public TextView title;
         public TextView author;
         public CircleImageView circleImageView;
-        public ViewHolder(View v) {
+        public String subreddit;
+        public String postId;
+        public ViewHolder(final View v) {
             super(v);
             title = (TextView) v.findViewById(R.id.reddit_listItem_title);
             author = (TextView) v.findViewById(R.id.reddit_listItem_author);
@@ -135,6 +139,8 @@ public class RedditListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             // - replace the contents of the view with that element
             viewHolder.title.setText(listElements.get(position).title);
             viewHolder.author.setText(listElements.get(position).author);
+            viewHolder.subreddit = listElements.get(position).subreddit;
+            viewHolder.postId = listElements.get(position).id;
             if (redditService != null) {
                 redditService.getImage(listElements.get(position).thumbnail, 100, 100, null,
                     new RedditService.Callback<Bitmap>() {
