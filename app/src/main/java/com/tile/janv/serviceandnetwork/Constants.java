@@ -15,6 +15,11 @@ public class Constants {
             "marathons"
     };
 
+    /**
+     * The number of Reddit items that are requested (maximum) on list call.
+     */
+    private static int POSTS_LIMIT = 20;
+
     private Constants() {
     }
 
@@ -24,5 +29,13 @@ public class Constants {
 
     public static String getSubreddit(int index) {
         return drawerSections[index];
+    }
+
+    public static int getPostsLimit() {
+        return POSTS_LIMIT;
+    }
+
+    public static void setPostsLimit(int postsLimit) {
+        POSTS_LIMIT = postsLimit;
     }
 }

@@ -10,11 +10,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.google.gson.Gson;
 import com.tile.janv.serviceandnetwork.gson.GsonRequest;
-import com.tile.janv.serviceandnetwork.gson.RedditDataContainer;
-import com.tile.janv.serviceandnetwork.gson.RedditListingResponseForGson;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.tile.janv.serviceandnetwork.gson.SubredditListResult;
 
 /**
  * Service like class for getting Reddit responses.
@@ -24,26 +20,23 @@ import java.util.List;
  */
 public class RedditService {
 
-    private static Gson gson;
-
     private RequestQueue requestQueue;
 
     public RedditService(RequestQueue requestQueue) {
         this.requestQueue = requestQueue;
     }
 
-    public void getSubredditList(String subreddit, final Callback<List<RedditListElement>> callback) {
-        String url = String.format("https://www.reddit.com/r/%s.json", subreddit);
+    public void getSubredditList(String subreddit, String after, final Callback<SubredditListResult> callback) {
+        String url = String.format("https://www.reddit.com/r/%s.json?limit=%d", subreddit, Constants.getPostsLimit());
+        if (after != null) {
+            url += "&after=" + after;
+        }
         GsonRequest jsonObjectRequest = new GsonRequest(
-                Request.Method.GET, url, RedditListingResponseForGson.class,
-                new Response.Listener<RedditListingResponseForGson>() {
+                Request.Method.GET, url, SubredditListResult.class,
+                new Response.Listener<SubredditListResult>() {
                     @Override
-                    public void onResponse(RedditListingResponseForGson response) {
-                        List<RedditListElement> listElements = new ArrayList<>();
-                        for (RedditDataContainer<RedditListElement> element : response.data.children) {
-                            listElements.add(element.data);
-                        }
-                        callback.onSuccess(listElements);
+                    public void onResponse(SubredditListResult response) {
+                        callback.onSuccess(response);
                     }
                 },
                 new Response.ErrorListener() {
@@ -78,11 +71,7 @@ public class RedditService {
         void onError(VolleyError error);
     }
 
-    public static Gson getGson() {
-        //lazy initialization
-        if (gson == null) {
-            gson = new Gson();
-        }
-        return gson;
+    public interface OnLoadMoreListener {
+        void onLoadMore();
     }
 }
