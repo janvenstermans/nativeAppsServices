@@ -1,4 +1,4 @@
-package com.tile.janv.serviceandnetwork.gson;
+package com.tile.janv.redditviewer.gson;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
@@ -6,8 +6,8 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.tile.janv.serviceandnetwork.RedditListElement;
-import com.tile.janv.serviceandnetwork.RedditPostDetails;
+import com.tile.janv.redditviewer.RedditListElement;
+import com.tile.janv.redditviewer.RedditPostDetails;
 
 import java.lang.reflect.Type;
 

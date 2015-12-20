@@ -1,4 +1,4 @@
-package com.tile.janv.serviceandnetwork;
+package com.tile.janv.redditviewer;
 
 /**
  * Created by janv on 18-Dec-15.
@@ -12,6 +12,10 @@ public class Constants {
             "books",
             "philosophy",
             "books",
+            "pics",
+            "worldnews",
+            "sports",
+            "movies",
             "marathons"
     };
 

@@ -1,19 +1,20 @@
-package com.tile.janv.serviceandnetwork;
+package com.tile.janv.redditviewer;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.tile.janv.serviceandnetwork.gson.SubredditListResult;
+import com.tile.janv.redditviewer.gson.SubredditListResult;
 
 import java.util.ArrayList;
 
@@ -37,6 +38,8 @@ public class SubredditFragment extends Fragment {
      */
     public static final String ARG_SECTION_NUMBER = "section_number";
 
+    private static final String LOGGING_TAG = "SubredditFragment";
+
     /**
      * Returns a new instance of this fragment for the given section
      * number.
@@ -58,6 +61,9 @@ public class SubredditFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_subreddit, container, false);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.subreddit_recycler_view);
         listEmptyText = (TextView) rootView.findViewById(R.id.list_is_empty_label);
+
+        // Indicate that this fragment would like to influence the set of actions in the action bar.
+        setHasOptionsMenu(true);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -96,8 +102,8 @@ public class SubredditFragment extends Fragment {
         recyclerView.addOnItemTouchListener(new RedditListItemClickListener(getContext(), new RedditListItemClickListener.RedditElementOnClickCallback() {
             @Override
             public void onClick(String subreddit, String postId) {
-//                Toast.makeText(getContext(), String.format("Item clicked from subreddit %s with id %s",subreddit,postId),
-//                        Toast.LENGTH_SHORT).show();
+                Log.i(LOGGING_TAG, String.format("list item from subreddit %s with id %s " +
+                        "clicked/touched.", subreddit, postId));
                 Intent showDetails = new Intent(getContext(), RedditDetailActivity.class);
                 showDetails.putExtra(RedditDetailActivity.SUBREDDIT, subreddit)
                         .putExtra(RedditDetailActivity.POST_ID, postId);
@@ -111,9 +117,9 @@ public class SubredditFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        redditService = new RedditService(Volley.newRequestQueue(getActivity()));
+        redditService = new RedditService(Volley.newRequestQueue(getActivity()), ((RedditViewerApplication) getActivity().getApplication()).daoSession);
         recyclerViewAdapter.setRedditService(redditService);
-        ((MainActivity) getActivity()).onSectionAttached(getArgSectionNumner());
+        ((MainActivity) getActivity()).onSectionAttached(getArgSectionNumber());
     }
 
     @Override
@@ -122,24 +128,40 @@ public class SubredditFragment extends Fragment {
         getJsonFromReddit();
     }
 
-    private int getArgSectionNumner() {
-        return getArguments().getInt(ARG_SECTION_NUMBER);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_refresh) {
+            redditService.refreshSubredditList(getSubreddit(), new RedditService.Callback<SubredditListResult>() {
+                @Override
+                public void onSuccess(SubredditListResult result) {
+                    Log.i(LOGGING_TAG, String.format("got %d posts from reddit service.", result.redditListElementList.size()));
+                    recyclerViewAdapter.setListElements(result.redditListElementList);
+                    postsAfter = result.after;
+                }
+
+                @Override
+                public void onError(VolleyError error) {
+                    Log.i(LOGGING_TAG, "service call getSubredditList gave error.", error);
+                }
+            });
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void getJsonFromReddit() {
-        String subreddit = Constants.getSubreddit(getArgSectionNumner());
-        redditService.getSubredditList(subreddit, postsAfter, new RedditService.Callback<SubredditListResult>() {
+        redditService.getSubredditList(getSubreddit(), postsAfter, new RedditService.Callback<SubredditListResult>() {
             @Override
             public void onSuccess(SubredditListResult result) {
-                Toast.makeText(getContext(), "success on json call, recieved " +
-                        result.redditListElementList.size() + " posts", Toast.LENGTH_SHORT).show();
+                Log.i(LOGGING_TAG, String.format("got %d posts from reddit service.", result.redditListElementList.size()));
                 recyclerViewAdapter.addListElements(result.redditListElementList);
                 postsAfter = result.after;
             }
 
             @Override
             public void onError(VolleyError error) {
-                Toast.makeText(getContext(), "error on json call", Toast.LENGTH_SHORT).show();
+                Log.i(LOGGING_TAG, "service call getSubredditList gave error.", error);
             }
         });
     }
@@ -152,5 +174,13 @@ public class SubredditFragment extends Fragment {
             recyclerView.setVisibility(View.GONE);
             listEmptyText.setVisibility(View.VISIBLE);
         }
+    }
+
+    private String getSubreddit() {
+        return Constants.getSubreddit(getArgSectionNumber());
+    }
+
+    private int getArgSectionNumber() {
+        return getArguments().getInt(ARG_SECTION_NUMBER);
     }
 }

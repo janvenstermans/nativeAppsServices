@@ -1,4 +1,4 @@
-package com.tile.janv.serviceandnetwork;
+package com.tile.janv.redditviewer;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
