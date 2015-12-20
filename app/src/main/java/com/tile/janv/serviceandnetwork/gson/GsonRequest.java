@@ -19,7 +19,7 @@ import java.util.Map;
  * Created by janv on 19-Dec-15.
  */
 public class GsonRequest<T> extends Request<T> {
-    private final Gson gson = RedditService.getGson();
+    private final Gson gson = GsonUtil.getGson();
     private final Class<T> clazz;
     private final Map<String, String> headers;
     private final Response.Listener<T> listener;
