@@ -1,11 +1,16 @@
 package com.tile.janv.redditviewer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by janv on 18-Dec-15.
  */
 public class Constants {
 
-    private static String[] drawerSections = {
+    private static List<SubredditsChangedListener> subredditsChangedListenerList = new ArrayList<>();
+
+    private static String[] subreddits = {
             "funny",
             "art",
             "movies",
@@ -27,12 +32,19 @@ public class Constants {
     private Constants() {
     }
 
-    public static String[] getDrawerSections() {
-        return drawerSections;
+    public static String[] getSubreddits() {
+        return subreddits;
+    }
+
+    public static void setSubreddits(String[] subreddits) {
+        Constants.subreddits = subreddits;
+        for (SubredditsChangedListener listener : subredditsChangedListenerList) {
+            listener.subredditsChanged();
+        }
     }
 
     public static String getSubreddit(int index) {
-        return drawerSections[index];
+        return subreddits[index];
     }
 
     public static int getPostsLimit() {
@@ -41,5 +53,17 @@ public class Constants {
 
     public static void setPostsLimit(int postsLimit) {
         POSTS_LIMIT = postsLimit;
+    }
+
+    public interface SubredditsChangedListener {
+        void subredditsChanged();
+    }
+
+    public static void addSubredditChangedListener(SubredditsChangedListener listener) {
+        subredditsChangedListenerList.add(listener);
+    }
+
+    public static void removeSubredditChangedListener(SubredditsChangedListener listener) {
+        subredditsChangedListenerList.remove(listener);
     }
 }

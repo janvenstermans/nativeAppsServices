@@ -12,6 +12,8 @@ import com.android.volley.VolleyError;
 
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -44,25 +46,29 @@ public class RedditListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
+        @Bind(R.id.reddit_listItem_title)
         public TextView title;
+        @Bind(R.id.reddit_listItem_author)
         public TextView author;
+        @Bind(R.id.circle_image)
         public CircleImageView circleImageView;
         public String subreddit;
         public String postId;
+
         public ViewHolder(final View v) {
             super(v);
-            title = (TextView) v.findViewById(R.id.reddit_listItem_title);
-            author = (TextView) v.findViewById(R.id.reddit_listItem_author);
-            circleImageView = (CircleImageView) v.findViewById(R.id.circle_image);
+            ButterKnife.bind(this, v);
         }
     }
 
     public static class ProgressViewHolder extends RecyclerView.ViewHolder {
+
+        @Bind(R.id.progressBar1)
         public ProgressBar progressBar;
 
         public ProgressViewHolder(View v) {
             super(v);
-            progressBar = (ProgressBar) v.findViewById(R.id.progressBar1);
+            ButterKnife.bind(this, v);
         }
     }
 
