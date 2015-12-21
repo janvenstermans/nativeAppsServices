@@ -13,16 +13,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
 import com.tile.janv.redditviewer.Constants;
 import com.tile.janv.redditviewer.R;
 import com.tile.janv.redditviewer.RedditListAdapter;
 import com.tile.janv.redditviewer.RedditListElement;
 import com.tile.janv.redditviewer.RedditListItemClickListener;
 import com.tile.janv.redditviewer.RedditService;
-import com.tile.janv.redditviewer.RedditViewerApplication;
-import com.tile.janv.redditviewer.activity.SubredditListActivity;
 import com.tile.janv.redditviewer.activity.RedditPostDetailActivity;
+import com.tile.janv.redditviewer.activity.SubredditListActivity;
 import com.tile.janv.redditviewer.gson.SubredditListResult;
 
 import java.util.ArrayList;
@@ -130,15 +128,21 @@ public class SubredditFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        redditService = new RedditService(Volley.newRequestQueue(getActivity()), ((RedditViewerApplication) getActivity().getApplication()).daoSession);
-        recyclerViewAdapter.setRedditService(redditService);
-        ((SubredditListActivity) getActivity()).onSectionAttached(getArgSectionNumber());
+
+        getParentActivity().onSectionAttached(getArgSectionNumber());
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        getJsonFromReddit();
+        getParentActivity().getRedditService(new SubredditListActivity.GetRedditServiceCallback() {
+            @Override
+            public void onRedditServiceAvailable(RedditService result) {
+                redditService = result;
+                recyclerViewAdapter.setRedditService(redditService);
+                getJsonFromReddit();
+            }
+        });
     }
 
     @Override
@@ -195,5 +199,9 @@ public class SubredditFragment extends Fragment {
 
     private int getArgSectionNumber() {
         return getArguments().getInt(ARG_SECTION_NUMBER);
+    }
+
+    private SubredditListActivity getParentActivity() {
+        return ((SubredditListActivity) getActivity());
     }
 }
