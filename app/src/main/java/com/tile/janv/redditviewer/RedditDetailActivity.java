@@ -1,4 +1,4 @@
-package com.tile.janv.serviceandnetwork;
+package com.tile.janv.redditviewer;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -40,7 +40,7 @@ public class RedditDetailActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.detail_progressionBar);
         imageFailed = (TextView) findViewById(R.id.detail_imageLoadFailed);
 
-        redditService = new RedditService(Volley.newRequestQueue(this));
+        redditService = new RedditService(Volley.newRequestQueue(this), ((RedditViewerApplication) getApplication()).daoSession);
         redditService.getSubredditPost(getIntent().getStringExtra(SUBREDDIT), getIntent().getStringExtra(POST_ID), new RedditService.Callback<RedditPostDetails>() {
             @Override
             public void onSuccess(RedditPostDetails result) {

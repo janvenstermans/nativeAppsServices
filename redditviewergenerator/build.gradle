@@ -1,0 +1,14 @@
+apply plugin: 'application'
+apply plugin: 'java'
+
+mainClassName = "com.tile.janv.redditviewer.RedditViewerGenerator"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.freemarker', name: 'freemarker', version: '2.3.23'
+    compile group: 'de.greenrobot', name: 'greendao-generator', version: '2.1.0'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}

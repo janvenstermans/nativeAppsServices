@@ -1,14 +1,12 @@
-package com.tile.janv.serviceandnetwork.gson;
+package com.tile.janv.redditviewer.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.tile.janv.serviceandnetwork.RedditListElement;
-import com.tile.janv.serviceandnetwork.RedditPostDetails;
-
-import org.json.JSONObject;
+import com.tile.janv.redditviewer.RedditListElement;
+import com.tile.janv.redditviewer.RedditPostDetails;
 
 /**
  * Created by janv on 20-Dec-15.

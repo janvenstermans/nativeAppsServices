@@ -1,4 +1,4 @@
-package com.tile.janv.serviceandnetwork;
+package com.tile.janv.redditviewer;
 
 /**
  * Info of Reddit item for list view.

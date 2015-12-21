@@ -1,4 +1,4 @@
-package com.tile.janv.serviceandnetwork.gson;
+package com.tile.janv.redditviewer.gson;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -8,7 +8,6 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.tile.janv.serviceandnetwork.RedditService;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Map;

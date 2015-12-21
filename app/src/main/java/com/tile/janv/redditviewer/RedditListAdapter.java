@@ -1,15 +1,12 @@
-package com.tile.janv.serviceandnetwork;
+package com.tile.janv.redditviewer;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 
@@ -88,6 +85,11 @@ public class RedditListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public void setRedditService(RedditService redditService) {
         this.redditService = redditService;
+    }
+
+    public void setListElements(List<RedditListElement> redditListElementList) {
+        this.listElements.clear();
+        addListElements(redditListElementList);
     }
 
     public void addListElements(List<RedditListElement> listElements) {

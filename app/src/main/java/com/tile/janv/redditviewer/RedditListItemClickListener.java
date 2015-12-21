@@ -1,4 +1,4 @@
-package com.tile.janv.serviceandnetwork;
+package com.tile.janv.redditviewer;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
