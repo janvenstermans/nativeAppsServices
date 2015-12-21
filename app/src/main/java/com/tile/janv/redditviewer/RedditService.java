@@ -1,6 +1,11 @@
 package com.tile.janv.redditviewer;
 
+import android.app.Service;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Binder;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -26,16 +31,35 @@ import java.util.List;
  *
  * Created by janv on 19-Dec-15.
  */
-public class RedditService {
+public class RedditService extends Service {
 
     private static final String LOGGING_TAG = "RedditService";
 
-    private RequestQueue requestQueue;
-    private final DaoSession daoSession;
+    // Binder given to clients
+    private final IBinder mBinder = new RedditServiceBinder();
 
-    public RedditService(RequestQueue requestQueue, DaoSession daoSession) {
-        this.requestQueue = requestQueue;
-        this.daoSession = daoSession;
+    private RequestQueue requestQueue;
+    private DaoSession daoSession;
+
+    public class RedditServiceBinder extends Binder {
+        public RedditService getService() {
+            // Return this instance of RedditService so clients can call public methods
+            return RedditService.this;
+        }
+
+    }
+
+    public RedditService() {
+        super();
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        RedditViewerApplication application = (RedditViewerApplication) getApplication();
+        requestQueue = application.requestQueue;
+        daoSession = application.daoSession;
+        return mBinder;
     }
 
     public void getSubredditList(String subreddit, String after, final Callback<SubredditListResult> callback) {
