@@ -14,4 +14,9 @@
     <!-- details activity -->
     <string name="title_activity_reddit_detail">Reddit Post Detail</string>
     <string name="image_cannot_be_loaded">Image cannot be loaded</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <string name="settings_post_limit">Posts limit per call</string>
+    <string name="settings_subreddits">Available subreddits</string>
+    <string name="settings_update">Update</string>
 </resources>

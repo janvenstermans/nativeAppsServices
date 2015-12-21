@@ -1,5 +1,6 @@
-package com.tile.janv.redditviewer;
+package com.tile.janv.redditviewer.activity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -13,19 +14,32 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.tile.janv.redditviewer.R;
+import com.tile.janv.redditviewer.RedditPostDetails;
+import com.tile.janv.redditviewer.RedditService;
+import com.tile.janv.redditviewer.RedditViewerApplication;
 
-public class RedditDetailActivity extends AppCompatActivity {
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
+public class RedditPostDetailActivity extends AppCompatActivity {
 
     public final static String SUBREDDIT = "com.tile.janv.serviceandnetwork.redditdetailactivity.SUBREDDIT";
     public final static String POST_ID = "com.tile.janv.serviceandnetwork.redditdetailactivity.POST_ID";
 
-    private TextView title;
-    private TextView author;
-    private TextView comments;
+    @Bind(R.id.detail_title)
+    TextView title;
+    @Bind(R.id.detail_author)
+    TextView author;
+    @Bind(R.id.detail_comments)
+    TextView comments;
     //image section
-    private ImageView image;
-    private ProgressBar progressBar;
-    private TextView imageFailed;
+    @Bind(R.id.detail_imageView)
+    ImageView image;
+    @Bind(R.id.detail_progressionBar)
+    ProgressBar progressBar;
+    @Bind(R.id.detail_imageLoadFailed)
+    TextView imageFailed;
 
     private RedditService redditService;
 
@@ -33,12 +47,7 @@ public class RedditDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reddit_detail);
-        title = (TextView) findViewById(R.id.detail_title);
-        author = (TextView) findViewById(R.id.detail_author);
-        comments = (TextView) findViewById(R.id.detail_comments);
-        image = (ImageView) findViewById(R.id.detail_imageView);
-        progressBar = (ProgressBar) findViewById(R.id.detail_progressionBar);
-        imageFailed = (TextView) findViewById(R.id.detail_imageLoadFailed);
+        ButterKnife.bind(this);
 
         redditService = new RedditService(Volley.newRequestQueue(this), ((RedditViewerApplication) getApplication()).daoSession);
         redditService.getSubredditPost(getIntent().getStringExtra(SUBREDDIT), getIntent().getStringExtra(POST_ID), new RedditService.Callback<RedditPostDetails>() {
@@ -73,8 +82,9 @@ public class RedditDetailActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
             return true;
         }
 

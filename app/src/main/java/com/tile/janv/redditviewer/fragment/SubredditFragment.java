@@ -1,4 +1,4 @@
-package com.tile.janv.redditviewer;
+package com.tile.janv.redditviewer.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,18 +14,32 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.tile.janv.redditviewer.Constants;
+import com.tile.janv.redditviewer.R;
+import com.tile.janv.redditviewer.RedditListAdapter;
+import com.tile.janv.redditviewer.RedditListElement;
+import com.tile.janv.redditviewer.RedditListItemClickListener;
+import com.tile.janv.redditviewer.RedditService;
+import com.tile.janv.redditviewer.RedditViewerApplication;
+import com.tile.janv.redditviewer.activity.SubredditListActivity;
+import com.tile.janv.redditviewer.activity.RedditPostDetailActivity;
 import com.tile.janv.redditviewer.gson.SubredditListResult;
 
 import java.util.ArrayList;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class SubredditFragment extends Fragment {
 
-    private TextView listEmptyText;
+    @Bind(R.id.list_is_empty_label)
+    TextView listEmptyText;
 
-    private RecyclerView recyclerView;
+    @Bind(R.id.subreddit_recycler_view)
+    RecyclerView recyclerView;
     private RedditListAdapter recyclerViewAdapter;
     private LinearLayoutManager recyclerViewLayoutManager;
     private String postsAfter;
@@ -59,8 +73,7 @@ public class SubredditFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_subreddit, container, false);
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.subreddit_recycler_view);
-        listEmptyText = (TextView) rootView.findViewById(R.id.list_is_empty_label);
+        ButterKnife.bind(this, rootView);
 
         // Indicate that this fragment would like to influence the set of actions in the action bar.
         setHasOptionsMenu(true);
@@ -104,9 +117,9 @@ public class SubredditFragment extends Fragment {
             public void onClick(String subreddit, String postId) {
                 Log.i(LOGGING_TAG, String.format("list item from subreddit %s with id %s " +
                         "clicked/touched.", subreddit, postId));
-                Intent showDetails = new Intent(getContext(), RedditDetailActivity.class);
-                showDetails.putExtra(RedditDetailActivity.SUBREDDIT, subreddit)
-                        .putExtra(RedditDetailActivity.POST_ID, postId);
+                Intent showDetails = new Intent(getContext(), RedditPostDetailActivity.class);
+                showDetails.putExtra(RedditPostDetailActivity.SUBREDDIT, subreddit)
+                        .putExtra(RedditPostDetailActivity.POST_ID, postId);
                 getActivity().startActivity(showDetails);
             }
         }));
@@ -119,7 +132,7 @@ public class SubredditFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         redditService = new RedditService(Volley.newRequestQueue(getActivity()), ((RedditViewerApplication) getActivity().getApplication()).daoSession);
         recyclerViewAdapter.setRedditService(redditService);
-        ((MainActivity) getActivity()).onSectionAttached(getArgSectionNumber());
+        ((SubredditListActivity) getActivity()).onSectionAttached(getArgSectionNumber());
     }
 
     @Override

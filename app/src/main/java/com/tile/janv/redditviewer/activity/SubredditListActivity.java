@@ -1,5 +1,6 @@
-package com.tile.janv.redditviewer;
+package com.tile.janv.redditviewer.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -8,7 +9,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity
+import com.tile.janv.redditviewer.Constants;
+import com.tile.janv.redditviewer.fragment.NavigationDrawerFragment;
+import com.tile.janv.redditviewer.R;
+import com.tile.janv.redditviewer.fragment.SubredditFragment;
+
+public class SubredditListActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     /**
@@ -50,7 +56,7 @@ public class MainActivity extends AppCompatActivity
      * @param number
      */
     public void onSectionAttached(int number) {
-        mTitle = Constants.getDrawerSections()[number];
+        mTitle = Constants.getSubreddits()[number];
     }
 
     public void restoreActionBar() {
@@ -83,6 +89,8 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
             return true;
         }
 
